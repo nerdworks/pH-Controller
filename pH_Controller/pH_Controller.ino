@@ -147,7 +147,6 @@ void setTime(){
   }
 
 DateTime now = RTC.now();
-//Serial.println(now);
 Serial.print(now.year(), DEC);
 Serial.print('/');
 if (now.month() < 10){
