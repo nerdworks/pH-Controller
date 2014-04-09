@@ -18,6 +18,25 @@
 #define txpin 3                                       //set the TX pin to pin 3
 //#define rssipin ?                                   // Read RSSI signal, and display bars on LCD
 
+// Define some special characters
+// Roterende temp grader-tegn
+byte deg1[8] = {B1100,B10100,B11100,B0,B0,B0,B0};
+byte deg2[8] = {B10100,B10100,B11100,B0,B0,B0,B0};
+byte deg3[8] = {B11000,B10100,B11100,B0,B0,B0,B0};
+byte deg4[8] = {B11100,B10000,B11100,B0,B0,B0,B0};
+byte deg5[8] = {B11100,B10100,B11000,B0,B0,B0,B0};
+byte deg6[8] = {B11100,B10100,B10100,B0,B0,B0,B0};
+byte deg7[8] = {B11100,B10100,B1100,B0,B0,B0,B0};
+byte deg8[8] = {B11100,B100,B11100,B0,B0,B0,B0};
+// Finn riktig spinnehastighet for grad-tegnet
+
+// Signalstyrke-tegn
+
+
+// RX-tegn (roterende så lenge radio er aktiv
+  
+
+
 int pHSet = 650;                                      // Legg inn settpunkt 100 ghanger større enn ønsket pH.
 
 SoftwareSerial myserial(rxpin, txpin);                //enable the soft serial port
@@ -66,7 +85,9 @@ Serial.println("RTC is NOT running!");
      inputstring.reserve(5);                                                   //set aside some bytes for receiving data from the PC
      sensorstring.reserve(30);                                                 //set aside some bytes for receiving data from Atlas Scientific product
      currentMillis = millis();                                                 //
-     lastCurrentMillis = currentMillis;
+     lastCurrentMillis = currentMillis;                                        // For 1000 ms loop
+     defaultScreen();                                                          // Draw default setup screen
+
 
   
 } //End Setup
@@ -111,13 +132,14 @@ void loop() {
  //        1.6 reset check temp probe
  //        1.7 Annet
  
- // 2. Se om det er gått lang nok tid til at ting skal oppdateres (1000 ms). Hvis så, oppdater alt
+ // 2. Se om det er gått lang nok tid til at ting skal oppdateres (1000 ms). Hvis så, oppdater det som skal oppdateres på 1000 ms
  currentMillis = millis();
  if(currentMillis >= (lastCurrentMillis + 1000)) {
  //      2.1 Avles klokke
  //      2.2 Avles temp og send denne til pH dings hvis endringen fra forrige gang er stor nok f.eks 1 grad. Hvis probefeil, gå til alarmfunksjon med alarmtype, og bli der inntil reset.
  //      2.3 Avles pH verdi. Hvis probefeil, gå til alarmfunksjon og bli der inntil reset. Limp home modus for pH fra lagrede verdier.
- //      2.4 Osv
+ //      2.4 Finn ut om pH endrer seg med f.eks mer enn 1 på 10 sekunder = Alarm.
+ //      2.5 Osv
  
  
  
@@ -145,6 +167,10 @@ void loop() {
  
  lastCurrentMillis = currentMillis;
  } // End 1000 ms loop
+ 
+ // Ting som skal gjøres hver runde...
+ // Avles RSSI ?
+ // Avles Radiotrafikk
  
  
   
@@ -247,8 +273,8 @@ Serial.println(nowSecond, DEC);
 //  delay(500);
 //  lcd.setBacklight(LOW);
 //  delay(500);
-lcd.setCursor(0,0);
-lcd.print("pH");
+//lcd.setCursor(0,0);
+//lcd.print("pH");
 
 lcd.setCursor(4,0);
 lcd.print(sensorstring);
@@ -283,4 +309,42 @@ void readRTC(){
   nowMinute = now.minute();
   nowSecond = now.second(); 
   } // End readRTC
+  
+
+void defaultScreen(){
+     // Draw default screen
+     /*
+     pH_??.??__Temp_??.?o    Eks: pH  6.45  Temp 26.7grader    pH legges inn på 4,0;      Temp legges inn på 14,0;       Grader legges inn på 18,0
+     Set_?.??_NxtCal_????    Eks: Set 6.50 NxtCal 0914         Set pH legges inn på 4,1;  NxtCal legges inn på 16,1
+     Min_?.??_@??:??_St_^    Eks: Min 6.36 @ 02:34 St ^        Min legges inn på 4,2;     Min Klokke legges inn på 10,2; St tegn legges inn på 19,2 
+     Max_?.??_@??:??_RX_^    Eks: Max 6.53 @ 17:21 RX ^        Max legges inn på 4,3;     Max klokke legges inn på 10,3; RX tegn legges inn på 19,3
+     
+     Blink med gradertegn for å indikere liv, eller ruller en manglende pixel
+     
+     */
+  lcd.setBacklight(HIGH); // Only HIGH and LOW available :-(
+  lcd.setCursor(0,0);  lcd.print("pH");   lcd.setCursor(9,0); lcd.print("Temp");    lcd.setCursor(18,0); lcd.print((char)223); lcd.setCursor(19,0); lcd.print("C"); 
+  lcd.setCursor(0,1);  lcd.print("Set");  lcd.setCursor(9,1); lcd.print("NxtCal");  
+  lcd.setCursor(0,2);  lcd.print("Min");  lcd.setCursor(9,2); lcd.print("@");       lcd.setCursor(16,2); lcd.print("St");
+  lcd.setCursor(0,3);  lcd.print("Max");  lcd.setCursor(9,3); lcd.print("@");       lcd.setCursor(16,3); lcd.print("RX");
+  
+  // test roterende gradertegn
+  
+  
+  } // End defaultScreen
+     
+     
+void alarmScreen(String alarm){
+     // Draw alarm screen
+     /*
+     Blink med baklys!
+     Men ikke gå ut av denne funksjonen før reset!
+     
+     */
+  lcd.setBacklight(HIGH); // Only HIGH and LOW available :-(
+  lcd.setCursor(4,0);  lcd.print("ALARM");   
+  lcd.setCursor(1,2);  lcd.print(alarm);  
+  
+  } // End defaultScreen
+     
 
