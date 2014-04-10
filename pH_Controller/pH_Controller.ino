@@ -16,18 +16,19 @@
 
 #define rxpin 2                                       //set the RX pin to pin 2
 #define txpin 3                                       //set the TX pin to pin 3
-//#define rssipin ?                                   // Read RSSI signal, and display bars on LCD
+//#define rssipin ?                                   // Read RSSI signal from pin 6 on Xbee module, and display bars on LCD. See chapter 6 in datasheet
+//#define associatepin ?                              // Read associate pin 15 on Xbee module, and display associate status on LCD
 
 // Define some special characters
-// Roterende temp grader-tegn
-byte deg1[8] = {B1100,B10100,B11100,B0,B0,B0,B0};
-byte deg2[8] = {B10100,B10100,B11100,B0,B0,B0,B0};
-byte deg3[8] = {B11000,B10100,B11100,B0,B0,B0,B0};
-byte deg4[8] = {B11100,B10000,B11100,B0,B0,B0,B0};
-byte deg5[8] = {B11100,B10100,B11000,B0,B0,B0,B0};
-byte deg6[8] = {B11100,B10100,B10100,B0,B0,B0,B0};
-byte deg7[8] = {B11100,B10100,B1100,B0,B0,B0,B0};
-byte deg8[8] = {B11100,B100,B11100,B0,B0,B0,B0};
+// Roterende temp grader-tegn. Bruke createChar(). det er nok. Behøver ikke å bruke write mer enn en gang ;-)
+byte deg1[8] = {B1100,B10100,B11100,B0,B0,B0,B0,B0};
+byte deg2[8] = {B10100,B10100,B11100,B0,B0,B0,B0,B0};
+byte deg3[8] = {B11000,B10100,B11100,B0,B0,B0,B0,B0};
+byte deg4[8] = {B11100,B10000,B11100,B0,B0,B0,B0,B0};
+byte deg5[8] = {B11100,B10100,B11000,B0,B0,B0,B0,B0};
+byte deg6[8] = {B11100,B10100,B10100,B0,B0,B0,B0,B0};
+byte deg7[8] = {B11100,B10100,B1100,B0,B0,B0,B0,B0};
+byte deg8[8] = {B11100,B100,B11100,B0,B0,B0,B0,B0};
 // Finn riktig spinnehastighet for grad-tegnet
 
 // Signalstyrke-tegn
